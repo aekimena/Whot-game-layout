@@ -11,7 +11,6 @@ let cards = [[1, 'ci'], [2, 'ci'], [3, 'ci'], [4, 'ci'], [5, 'ci'],
 
 let backupcards = [];
 let computercards = [];
-let domcomputercards = [];
 let playercards = [];
 let showcard = [];
 let trash = [];
