@@ -5,6 +5,7 @@ let computercards = [];
 let domcomputercards = [];
 let playercards = [];
 let showcard = []
+let playerplayed;
 
 function startgame() {
     shufflecards(cards)
@@ -34,17 +35,40 @@ function sharecards() {
         }
     }
 
+    for (i of cards) {
+        showcard.push(i);
+        cards.splice(cards.indexOf(i), 1)
+        if (showcard.length == 1) {
+            break;
+        }
+    }
+
     displaycards();
 }
 
 function displaycards() {
     document.getElementById('computer-cards').innerHTML = `Computer cards: <br/> ${computercards}`
 
-    document.getElementById('player-cards').innerHTML = `Your cards: <br/> ${playercards}`
+    document.getElementById('player-cards').innerHTML = `Your cards(${playercards.length}): <br/> ${playercards}`
+
+    document.getElementById('display-card').innerHTML = `CARD ON LINE: (${showcard})`
 }
 
 function computer() {
-    document.getElementById('computer-cards-length').innerHTML = `Number of computer cards: ${computercards.length}`
+    for (i of computercards){
+        if (i[0] == showcard[0][0] || i[1] == showcard[0][1]){
+            document.getElementById('computer-input').innerHTML = `COMPUTER PLAYED: ${i}`;
+            showcard.splice(0);
+            showcard.push(i);
+            computercards.splice(computercards.indexOf(i), 1);
+            displaycards();
+            break;
+        }else {
+            info("computer picked a card!")
+        }
+    }
+
+    document.getElementById('computer-cards-length').innerHTML = `Number of computer cards: ${computercards.length}`;
 }
 
 function player() {
@@ -53,23 +77,31 @@ function player() {
         playerselection = document.getElementById('player-input').value;
         playerselection = String(playerselection);
         for (i of playercards) {
-            if(i[0] == Number(playerselection[0]) && i[1] == playerselection.slice(1) || i[0] == Number(playerselection.slice(0, 2)) && i[1] == playerselection.slice(2)) {
+            if((i[0] == Number(playerselection[0]) && i[1] == playerselection.slice(1) || i[0] == Number(playerselection.slice(0, 2)) && i[1] == playerselection.slice(2)) && (i[0] == showcard[0][0] || i[1] == showcard[0][1])) {
                 document.getElementById('player-input').value = "";
-                console.log(i);
+                showcard.splice(0);
                 showcard.push(i);
                 playercards.splice(playercards.indexOf(i), 1);
-                displaycards()
-                console.log(playercards.length)
+                displaycards();
+                computer();
                 break;
             } else{
-                console.log('no');
+                info("Wrong input or card doesn't exist!")
             }
         }
     }
 }
 
 function ingame() {
-    computer();
     player();
+}
+
+function info(information){
+    document.getElementById('player-input').value = "";
+    document.getElementById('info').style = "display: block";
+    document.getElementById('info').innerHTML = information;
+    setTimeout(()=>{
+        document.getElementById('info').style = "display: none"
+    }, 1000)
 }
 
